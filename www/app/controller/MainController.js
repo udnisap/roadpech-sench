@@ -18,11 +18,13 @@ Ext.define('Roadpech.controller.MainController', {
 
     config: {
         views: [
-            'Main'
+            'Main',
+            'SettingsForm'
         ],
 
         routes: {
-            'map': 'viewMap'
+            'map': 'viewMap',
+            'settings': 'viewSettings'
         },
 
         refs: {
@@ -30,6 +32,11 @@ Ext.define('Roadpech.controller.MainController', {
                 autoCreate: true,
                 selector: 'mainView',
                 xtype: 'mainView'
+            },
+            settingsForm: {
+                autoCreate: true,
+                selector: 'settingsForm',
+                xtype: 'settingsform'
             }
         }
     },
@@ -38,6 +45,12 @@ Ext.define('Roadpech.controller.MainController', {
         var mainView = this.getMainView();
         mainView.setActiveItem(0);
         Ext.Viewport.setActiveItem(mainView);
+    },
+
+    viewSettings: function() {
+        var View = this.getSettingsView();
+        View.setActiveItem(0);
+        Ext.Viewport.setActiveItem(View);
     }
 
 });

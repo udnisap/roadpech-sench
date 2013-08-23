@@ -26,7 +26,8 @@ Ext.define('Roadpech.view.MapPanel', {
                 xtype: 'map',
                 hidden: false,
                 id: 'map',
-                itemId: 'mymap'
+                itemId: 'mymap',
+                useCurrentLocation: true
             }
         ]
     }

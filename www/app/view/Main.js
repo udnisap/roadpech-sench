@@ -18,10 +18,15 @@ Ext.define('Roadpech.view.Main', {
     alias: 'widget.mainView',
 
     requires: [
-        'Roadpech.view.MapPanel'
+        'Roadpech.view.MapPanel',
+        'Roadpech.view.SettingsForm'
     ],
 
     config: {
+        layout: {
+            animation: 'slide',
+            type: 'card'
+        },
         items: [
             {
                 xtype: 'mapPanel',
@@ -29,7 +34,7 @@ Ext.define('Roadpech.view.Main', {
                 iconCls: 'maps'
             },
             {
-                xtype: 'container',
+                xtype: 'settingsform',
                 title: 'Settings',
                 iconCls: 'settings'
             }

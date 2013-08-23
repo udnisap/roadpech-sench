@@ -24,6 +24,9 @@ Ext.define('Roadpech.controller.MapController', {
         markers: {
             
         },
+        settings: {
+            
+        },
         models: [
             'Marker'
         ],
@@ -32,7 +35,8 @@ Ext.define('Roadpech.controller.MapController', {
         ],
         views: [
             'Marker',
-            'MapPanel'
+            'MapPanel',
+            'SettingsForm'
         ],
 
         routes: {
@@ -45,6 +49,10 @@ Ext.define('Roadpech.controller.MapController', {
                 autoCreate: true,
                 selector: 'markerView',
                 xtype: 'markerView'
+            },
+            settingsPanel: {
+                selector: 'settingsform',
+                xtype: 'settingsform'
             }
         },
 
@@ -60,6 +68,12 @@ Ext.define('Roadpech.controller.MapController', {
             },
             "button#update": {
                 tap: 'onUpdateTap'
+            },
+            "button#settingsBack": {
+                tap: 'onSettingsBackTap'
+            },
+            "button#settingsSave": {
+                tap: 'onSettingsSaveTap'
             }
         }
     },
@@ -77,32 +91,33 @@ Ext.define('Roadpech.controller.MapController', {
 
 
 
+
     },
 
     onMapMaprender: function(map, gmap, eOpts) {
         gmap = map.getMap();
         var me =  this,
             markers = Ext.getStore("markers");
-
+        console.log("render");
+        me.editModeEventListners(gmap);
         //load markers
         me.loadMarkers(map.getMap().getBounds());
 
 
-        //Map click event
-        google.maps.event.addListener(gmap, 'click', function(e){
-            var options = {
-                lat : e.latLng.lat(), 
-                lng : e.latLng.lng()
-            };
-            var marker = Ext.create('Roadpech.model.Marker', options);
-            markers.add(marker);
-            me.addMarker(marker, {
-                draggable: true,
-                icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=3|69FE96"
-            });
-        });  
 
+        /*
+        this.traficLayer = new google.maps.FusionTablesLayer({
+        query: {
+        select: 'LATITUDE',
+        from: '1qQ4uqpGKkNzHAtLtUAargS9Uezk0fyRf9NoVJ7E'
+        },
+        heatmap: {
+        enabled: true
+        }
+        });
+        this.traficLayer.setMap(gmap);
 
+        */
     },
 
     onMapCenterChange: function(map, gmap, center, eOpts) {
@@ -123,8 +138,87 @@ Ext.define('Roadpech.controller.MapController', {
             markers = Ext.getStore('markers'),
             marker = markerPanel.getRecord(),
             values =  markerPanel.getValues();
+        markerPanel.setMasked({
+            xtype: 'loadmask',
+            message: 'Saving'
+        });
         marker.setTrafficLevel(values.traffic_level);
         this.redirectTo('map');
+
+        markerPanel.setMasked(false);
+
+    },
+
+    onSettingsBackTap: function(button, e, eOpts) {
+        this.redirectTo('map');
+    },
+
+    onSettingsSaveTap: function(button, e, eOpts) {
+        var me = this,
+            settingsPanel = me.getSettingsPanel(),
+            settings = settingsPanel.getValues(),
+            map = me.getMap(),
+            gmap = map.getMap(),
+            markers = Ext.getStore("markers");;
+        this.settings = settings;
+        settingsPanel.setMasked({
+            xtype: 'loadmask',
+            message: 'Saving'
+        });
+
+
+        if (settings.addItem){
+            //Map click event
+            this.addEventListner = google.maps.event.addListener(gmap, 'click', function(e){
+                var options = {
+                    lat : e.latLng.lat(), 
+                    lng : e.latLng.lng()
+                };
+                var marker = Ext.create('Roadpech.model.Marker', options);
+                markers.add(marker);
+                me.addMarker(marker, {
+                    draggable: true,
+                    icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=3|69FE96"
+                });
+            });  
+        }else{
+            if (this.addEventListner){
+                google.maps.event.removeListener(this.addEventListner);
+            }
+        }
+        /*
+        console.log(map);
+        if(settings.curLocation){
+        map.useCurrentLocation(true);
+        }else{
+        map.useCurrentLocation(false);
+        }
+        */
+        this.redirectTo('map');
+        settingsPanel.setMasked(false);
+    },
+
+    editModeEventListners: function(gmap) {
+        var settings = this.getSettings();
+        if (settings.addItem){
+            //Map click event
+            this.addEventListner = google.maps.event.addListener(gmap, 'click', function(e){
+                var options = {
+                    lat : e.latLng.lat(), 
+                    lng : e.latLng.lng()
+                };
+                var marker = Ext.create('Roadpech.model.Marker', options);
+                markers.add(marker);
+                me.addMarker(marker, {
+                    draggable: true,
+                    icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=3|69FE96"
+                });
+            });  
+        }else{
+            if (this.addEventListner){
+                google.maps.event.removeListener(this.addEventListner);
+            }
+        }
     },
 
     addMarker: function(marker, gmOptions) {
