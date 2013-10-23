@@ -32,7 +32,7 @@ Ext.application({
 
     launch: function() {
 
-        Ext.create('Roadpech.view.MapPanel', {fullscreen: true});
+        Ext.create('Roadpech.view.Login', {fullscreen: true});
     }
 
 });
