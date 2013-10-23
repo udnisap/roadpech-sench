@@ -14,8 +14,6 @@
  */
 
 //@require @packageOverrides
-console.log("dfdf");
-alert('loaded');
 Ext.Loader.setConfig({
 
 });
