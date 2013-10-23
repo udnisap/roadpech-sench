@@ -40,7 +40,8 @@ Ext.define('Roadpech.view.Main', {
             }
         ],
         tabBar: {
-            docked: 'bottom'
+            docked: 'bottom',
+            hidden: true
         }
     }
 

@@ -18,16 +18,82 @@ Ext.define('Roadpech.view.MapPanel', {
     alias: 'widget.mapPanel',
 
     config: {
+        hideAnimation: 'fadeOut',
+        showAnimation: 'fadeIn',
         layout: {
             type: 'fit'
         },
         items: [
             {
+                xtype: 'toolbar',
+                docked: 'top',
+                ui: 'light',
+                items: [
+                    {
+                        xtype: 'button',
+                        itemId: 'user',
+                        ui: 'plain',
+                        badgeText: '',
+                        icon: 'true',
+                        iconCls: 'user',
+                        text: ''
+                    },
+                    {
+                        xtype: 'button',
+                        docked: 'right',
+                        itemId: 'settings',
+                        ui: 'plain',
+                        badgeText: '',
+                        icon: 'true',
+                        iconCls: 'settings',
+                        text: ''
+                    },
+                    {
+                        xtype: 'button',
+                        docked: 'right',
+                        itemId: 'refresh',
+                        ui: 'plain',
+                        badgeText: '',
+                        icon: 'true',
+                        iconCls: 'refresh',
+                        text: ''
+                    },
+                    {
+                        xtype: 'button',
+                        docked: 'right',
+                        itemId: 'location',
+                        ui: 'plain',
+                        badgeText: '',
+                        icon: 'true',
+                        iconCls: 'locate',
+                        text: ''
+                    },
+                    {
+                        xtype: 'button',
+                        hidden: true,
+                        itemId: 'heatmap',
+                        ui: 'plain',
+                        badgeText: '',
+                        icon: 'true',
+                        iconCls: 'bookmarks',
+                        text: ''
+                    },
+                    {
+                        xtype: 'button',
+                        docked: 'left',
+                        itemId: 'add',
+                        ui: 'plain',
+                        badgeText: '',
+                        icon: 'true',
+                        iconCls: 'add',
+                        text: ''
+                    }
+                ]
+            },
+            {
                 xtype: 'map',
-                hidden: false,
                 id: 'map',
-                itemId: 'mymap',
-                useCurrentLocation: true
+                itemId: 'mymap'
             }
         ]
     }

@@ -37,14 +37,19 @@ Ext.define('Roadpech.controller.MainController', {
                 autoCreate: true,
                 selector: 'settingsForm',
                 xtype: 'settingsform'
+            },
+            mapView: {
+                autoCreate: true,
+                selector: 'mapPanel',
+                xtype: 'mapPanel'
             }
         }
     },
 
     viewMap: function() {
-        var mainView = this.getMainView();
-        mainView.setActiveItem(0);
-        Ext.Viewport.setActiveItem(mainView);
+        var view = this.getMapView();
+        //mainView.setActiveItem(0);
+        Ext.Viewport.setActiveItem(view);
     },
 
     viewSettings: function() {

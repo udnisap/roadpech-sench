@@ -22,7 +22,7 @@ Ext.define('Roadpech.model.Marker', {
         fields: [
             {
                 name: 'id',
-                type: 'auto'
+                type: 'int'
             },
             {
                 name: 'time_stamp'
@@ -33,10 +33,29 @@ Ext.define('Roadpech.model.Marker', {
                 type: 'int'
             },
             {
+                defaultValue: 'FE7569',
+                name: 'colour',
+                persist: false,
+                type: 'string'
+            },
+            {
+                convert: function(v, rec) {
+                    return rec.get('latitude');
+
+                },
                 name: 'lat'
             },
             {
+                name: 'latitude'
+            },
+            {
+                convert: function(v, rec) {
+                    return rec.get('longitude');
+                },
                 name: 'lng'
+            },
+            {
+                name: 'longitude'
             },
             {
                 defaultValue: 1,
@@ -50,7 +69,7 @@ Ext.define('Roadpech.model.Marker', {
             var me = this,
                 marker = this.getMapMarker(),
                 traffic_level = me.get('traffic_level'),
-                colour = (this.phantom) ?  "69FE96" : "FE7569";
+                colour = me.get('colour');
 
             if (marker)
             marker.setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+traffic_level+"|"+colour);
@@ -59,7 +78,6 @@ Ext.define('Roadpech.model.Marker', {
 
     setTrafficLevel: function(traffic) {
         this.set('traffic_level', traffic);
-        console.log(traffic);
         this.updateMapMarker();
     },
 
@@ -70,6 +88,10 @@ Ext.define('Roadpech.model.Marker', {
         }else{
             console.log(latlng);
         }
+    },
+
+    setLat: function(lat) {
+        console.log(lat);
     }
 
 });

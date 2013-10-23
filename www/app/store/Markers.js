@@ -26,8 +26,15 @@ Ext.define('Roadpech.store.Markers', {
         model: 'Roadpech.model.Marker',
         storeId: 'markers',
         proxy: {
-            type: 'localstorage',
-            id: 'markers'
+            type: 'rest',
+            url: 'http://localhost/roadpech/roadpech-rest/index.php/marker',
+            appendId: false,
+            reader: {
+                type: 'json'
+            },
+            writer: {
+                type: 'json'
+            }
         }
     }
 });

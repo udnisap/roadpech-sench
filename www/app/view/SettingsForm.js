@@ -18,7 +18,23 @@ Ext.define('Roadpech.view.SettingsForm', {
     alias: 'widget.settingsform',
 
     config: {
+        hideAnimation: 'fadeOut',
+        showAnimation: 'fadeIn',
         items: [
+            {
+                xtype: 'titlebar',
+                docked: 'top',
+                title: 'Map Settings',
+                items: [
+                    {
+                        xtype: 'button',
+                        itemId: 'settingsBack',
+                        ui: 'back',
+                        iconCls: 'arrow_left',
+                        text: ''
+                    }
+                ]
+            },
             {
                 xtype: 'fieldset',
                 title: 'Options',
@@ -36,13 +52,75 @@ Ext.define('Roadpech.view.SettingsForm', {
                         name: 'curLocation'
                     },
                     {
+                        xtype: 'togglefield',
+                        label: 'Show Heatmap',
+                        labelWidth: '70%',
+                        name: 'heatmap',
+                        value: 1
+                    },
+                    {
                         xtype: 'selectfield',
                         label: 'Update Frequency',
                         labelWidth: '70%',
                         name: 'updateFrq',
                         autoCapitalize: true,
                         autoComplete: true,
-                        autoCorrect: true
+                        autoCorrect: true,
+                        options: [
+                            {
+                                text: '30 Seconds',
+                                value: '30'
+                            },
+                            {
+                                text: '1 Minute',
+                                value: '60'
+                            },
+                            {
+                                text: '5 Minute',
+                                value: '300'
+                            },
+                            {
+                                text: '30 Minute',
+                                value: '18000'
+                            },
+                            {
+                                text: '1 Hour',
+                                value: '36000'
+                            },
+                            
+                        ]
+                    },
+                    {
+                        xtype: 'selectfield',
+                        label: 'History limit',
+                        labelWidth: '70%',
+                        name: 'history',
+                        autoCapitalize: true,
+                        autoComplete: true,
+                        autoCorrect: true,
+                        options: [
+                            {
+                                text: '30 Seconds',
+                                value: '30'
+                            },
+                            {
+                                text: '1 Minute',
+                                value: '60'
+                            },
+                            {
+                                text: '5 Minute',
+                                value: '300'
+                            },
+                            {
+                                text: '30 Minute',
+                                value: '18000'
+                            },
+                            {
+                                text: '1 Hour',
+                                value: '36000'
+                            },
+                            
+                        ]
                     }
                 ]
             },
@@ -50,6 +128,7 @@ Ext.define('Roadpech.view.SettingsForm', {
                 xtype: 'segmentedbutton',
                 centered: false,
                 ui: 'dark',
+                allowToggle: false,
                 layout: {
                     align: 'center',
                     pack: 'center',
@@ -64,8 +143,14 @@ Ext.define('Roadpech.view.SettingsForm', {
                     },
                     {
                         xtype: 'button',
-                        itemId: 'settingsSave',
+                        itemId: 'settingsClear',
                         ui: 'action',
+                        text: 'Clear Cache'
+                    },
+                    {
+                        xtype: 'button',
+                        itemId: 'settingsSave',
+                        ui: 'confirm',
                         text: 'Save'
                     }
                 ]

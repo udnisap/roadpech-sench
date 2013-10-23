@@ -120,12 +120,10 @@ Ext.define('Roadpech.controller.UserController', {
     },
 
     signInSuccess: function() {
-        console.log('signed In Success');
         var loginView = this.getLoginView();
-        mainView = this.getMainView();
         loginView.setMasked(false);
         this.redirectTo('map')
-        //Ext.Viewport.setActiveItem(mainView);
+
     },
 
     showLogin: function() {

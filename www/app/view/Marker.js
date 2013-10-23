@@ -21,10 +21,46 @@ Ext.define('Roadpech.view.Marker', {
         modal: false,
         items: [
             {
+                xtype: 'titlebar',
+                docked: 'top',
+                title: 'Update the Traffic Level',
+                items: [
+                    {
+                        xtype: 'button',
+                        itemId: 'back',
+                        ui: 'back',
+                        iconCls: 'arrow_left',
+                        text: ''
+                    }
+                ]
+            },
+            {
                 xtype: 'fieldset',
                 centered: false,
                 title: 'Marker Options',
                 items: [
+                    {
+                        xtype: 'container',
+                        width: '100%',
+                        layout: {
+                            type: 'hbox'
+                        },
+                        items: [
+                            {
+                                xtype: 'image',
+                                flex: 3,
+                                height: 50,
+                                src: 'marker.png'
+                            },
+                            {
+                                xtype: 'label',
+                                flex: 7,
+                                html: 'Getting Locaiton information',
+                                itemId: 'markerInfo',
+                                padding: '15px'
+                            }
+                        ]
+                    },
                     {
                         xtype: 'textfield',
                         centered: false,
@@ -54,17 +90,12 @@ Ext.define('Roadpech.view.Marker', {
                     },
                     {
                         xtype: 'datepickerfield',
+                        hidden: true,
                         label: 'Updated Time',
                         name: 'time_stamp',
                         placeHolder: 'mm/dd/yyyy'
                     }
                 ]
-            },
-            {
-                xtype: 'button',
-                itemId: 'back',
-                ui: 'back',
-                text: 'Back'
             },
             {
                 xtype: 'button',

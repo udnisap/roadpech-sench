@@ -20,6 +20,9 @@ Ext.Loader.setConfig({
 
 Ext.application({
     restAPI: 'localhost',
+    views: [
+        'UserPanel'
+    ],
     controllers: [
         'UserController',
         'MapController',

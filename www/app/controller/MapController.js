@@ -25,7 +25,9 @@ Ext.define('Roadpech.controller.MapController', {
             
         },
         settings: {
-            
+            heatmap: 1,
+            addItem: 0,
+            curLocation: 1
         },
         models: [
             'Marker'
@@ -51,9 +53,16 @@ Ext.define('Roadpech.controller.MapController', {
                 xtype: 'markerView'
             },
             settingsPanel: {
+                autoCreate: true,
                 selector: 'settingsform',
                 xtype: 'settingsform'
-            }
+            },
+            userPanel: {
+                autoCreate: true,
+                selector: 'userPanel',
+                xtype: 'UserPanel'
+            },
+            markerInfo: 'label#markerInfo'
         },
 
         control: {
@@ -74,14 +83,39 @@ Ext.define('Roadpech.controller.MapController', {
             },
             "button#settingsSave": {
                 tap: 'onSettingsSaveTap'
+            },
+            "button#settingsClear": {
+                tap: 'onSettingsClearTap'
+            },
+            "button#add": {
+                tap: 'onAddTap'
+            },
+            "button#settings": {
+                tap: 'onSettingsTap'
+            },
+            "button#heatmap": {
+                tap: 'onHeatmapTap'
+            },
+            "button#location": {
+                tap: 'onLocationTap'
+            },
+            "button#user": {
+                tap: 'onUserTap'
+            },
+            "button#userBack": {
+                tap: 'onUserBackTap'
+            },
+            "markerPanel": {
+                activate: 'onFormpanelActivate'
             }
         }
     },
 
     onMapInitialize: function(component, eOpts) {
-        var gMap = this.getMap();
+        var map = this.getMap(),
+            gMap = this.getMap();
 
-        gMap.setConfig({
+        map.setConfig({
             mapOptions : {
                 center: new google.maps.LatLng(6.79724,79.901837),
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -90,34 +124,40 @@ Ext.define('Roadpech.controller.MapController', {
         });
 
 
-
-
     },
 
     onMapMaprender: function(map, gmap, eOpts) {
         gmap = map.getMap();
         var me =  this,
             markers = Ext.getStore("markers");
-        console.log("render");
+
         me.editModeEventListners(gmap);
         //load markers
         me.loadMarkers(map.getMap().getBounds());
 
 
-
-        /*
         this.traficLayer = new google.maps.FusionTablesLayer({
-        query: {
-        select: 'LATITUDE',
-        from: '1qQ4uqpGKkNzHAtLtUAargS9Uezk0fyRf9NoVJ7E'
-        },
-        heatmap: {
-        enabled: true
-        }
+            query: {
+                select: 'LATITUDE',
+                from: '1eURGXM-CLVf_QJALn-1KaW714jUDFnWHM0bp2Cw'
+            },
+            heatmap: {
+                enabled: true
+            }
         });
         this.traficLayer.setMap(gmap);
 
-        */
+
+        this.geo = Ext.create('Ext.util.Geolocation', {
+            autoUpdate: false,
+            listeners: {
+                locationupdate: function(geo) {
+                    gmap.panTo(new google.maps.LatLng(geo.getLatitude(),geo.getLongitude()))
+                }
+            }
+        });
+
+        this.geocoder = new google.maps.Geocoder();
     },
 
     onMapCenterChange: function(map, gmap, center, eOpts) {
@@ -159,7 +199,7 @@ Ext.define('Roadpech.controller.MapController', {
             settings = settingsPanel.getValues(),
             map = me.getMap(),
             gmap = map.getMap(),
-            markers = Ext.getStore("markers");;
+            markers = Ext.getStore("markers");
         this.settings = settings;
         settingsPanel.setMasked({
             xtype: 'loadmask',
@@ -186,6 +226,13 @@ Ext.define('Roadpech.controller.MapController', {
                 google.maps.event.removeListener(this.addEventListner);
             }
         }
+
+        if(settings.heatmap){
+            this.traficLayer.setMap(gmap);
+        }else{
+            this.traficLayer.setMap(null);
+        }
+
         /*
         console.log(map);
         if(settings.curLocation){
@@ -196,6 +243,88 @@ Ext.define('Roadpech.controller.MapController', {
         */
         this.redirectTo('map');
         settingsPanel.setMasked(false);
+    },
+
+    onSettingsClearTap: function(button, e, eOpts) {
+        var markers = Ext.getStore("markers");
+        markers.removeAll();
+        this.redirectTo('map');
+    },
+
+    onAddTap: function(button, e, eOpts) {
+        var me = this,
+            map = me.getMap(),
+            gmap = map.getMap(),
+            markers = Ext.getStore("markers"),
+            latlng = gmap.getCenter(),
+            options = {
+                lat : latlng.lat(), 
+                lng : latlng.lng(),
+                colour : "ADDE63"
+            };
+
+
+        var marker = Ext.create('Roadpech.model.Marker', options);
+        markers.add(marker);
+        me.addMarker(marker, {
+            draggable: true,
+        });
+
+        if (!this.newlyAdded){
+            this.newlyAdded = 0;
+        }
+        this.newlyAdded++;
+        button.setBadgeText(this.newlyAdded);
+    },
+
+    onSettingsTap: function(button, e, eOpts) {
+        var view = this.getSettingsPanel(),
+            settings = this.getSettings();
+        console.log(settings);
+        if (settings)
+        view.setData(settings);
+        Ext.Viewport.setActiveItem(view);
+    },
+
+    onHeatmapTap: function(button, e, eOpts) {
+        var settings = this.getSettings()
+        if (this.traficLayer.getMap()){
+            settings.heatmap = 0;
+            this.traficLayer.getMap(null)
+        }else{
+            settings.heatmap = 1;
+            this.traficLayer.getMap(this.getMap().getMap());
+        }
+    },
+
+    onLocationTap: function(button, e, eOpts) {
+        this.geo.updateLocation();
+    },
+
+    onUserTap: function(button, e, eOpts) {
+        var view = this.getUserPanel(),
+            markers = Ext.getStore("markers");
+        view.setData({
+            markers : markers.getCount()
+        });
+        Ext.Viewport.setActiveItem(view);
+    },
+
+    onUserBackTap: function(button, e, eOpts) {
+        this.redirectTo('map');
+    },
+
+    onFormpanelActivate: function(newActiveItem, container, oldActiveItem, eOpts) {
+        var marker = this.getMarkerPanel().getValues(),
+            me = this;
+        this.geocoder.geocode( { 'location' : new google.maps.LatLng(marker.lat, marker.lng)}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            //alert(results[0].formatted_address);
+            me.getMarkerInfo().setHtml(results[0].formatted_address);
+        } else {
+            me.getMarkerInfo().setHtml("Geocode was not successful.");
+        }
+    });
     },
 
     editModeEventListners: function(gmap) {
@@ -229,14 +358,12 @@ Ext.define('Roadpech.controller.MapController', {
 
         if (markersHash[hash]) return;
 
-
         gmOptions = (gmOptions)? gmOptions : {};
         var level = marker.get('traffic_level');
         var gmReqOptions = {
             map: this.getMap().getMap(),
             animation: google.maps.Animation.DROP,
-            position: pos,
-            icon : "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+level+"|FE7569"    
+            position: pos,    
         };
 
         Ext.Object.merge(gmReqOptions, gmOptions);
@@ -286,6 +413,7 @@ Ext.define('Roadpech.controller.MapController', {
         var marker =  Ext.getStore('markers').getById(marker),
             markerPanel = this.getMarkerPanel();
 
+        this.getMarkerInfo().setHtml("Loading location information.");
         markerPanel.setRecord(marker);
         Ext.Viewport.setActiveItem(markerPanel);
 
