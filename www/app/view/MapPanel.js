@@ -16,7 +16,6 @@
 Ext.define('Roadpech.view.MapPanel', {
     extend: 'Ext.Panel',
     alias: 'widget.mapPanel',
-
     config: {
         hideAnimation: 'fadeOut',
         showAnimation: 'fadeIn',
@@ -91,10 +90,28 @@ Ext.define('Roadpech.view.MapPanel', {
                 ]
             },
             {
-                xtype: 'map',
-                id: 'map',
-                itemId: 'mymap'
-            }
+                layout : 'vbox',
+                items: [
+                    {
+                        xtype: 'map',
+                        id: 'map',
+                        itemId: 'mymap',
+                        flex : 8
+
+                    },
+                    {
+                        xtype: 'sliderfield',
+//                        label: 'Time Slider (current)',
+                        id : 'timeslider',
+                        labelWrap : true,
+                        value: 0,
+                        increment : 5,
+                        minValue: 0,
+                        maxValue: 20,
+                        flex : 1
+                    }
+                ]
+            },
         ]
     }
 

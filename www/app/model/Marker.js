@@ -19,6 +19,7 @@ Ext.define('Roadpech.model.Marker', {
     config: {
         mapMarker: '',
         identifier: 'sequential',
+        idProperty: 'id',
         fields: [
             {
                 name: 'id',
@@ -39,19 +40,19 @@ Ext.define('Roadpech.model.Marker', {
                 type: 'string'
             },
             {
-                convert: function(v, rec) {
-                    return rec.get('latitude');
-
-                },
+//                convert: function(v, rec) {
+//                    return rec.get('latitude');
+//
+//                },
                 name: 'lat'
             },
             {
                 name: 'latitude'
             },
             {
-                convert: function(v, rec) {
-                    return rec.get('longitude');
-                },
+//                convert: function(v, rec) {
+//                    return rec.get('longitude');
+//                },
                 name: 'lng'
             },
             {
@@ -73,6 +74,8 @@ Ext.define('Roadpech.model.Marker', {
 
             if (marker)
             marker.setIcon("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+traffic_level+"|"+colour);
+        }else{
+            
         }
     },
 
@@ -83,8 +86,8 @@ Ext.define('Roadpech.model.Marker', {
 
     setLocation: function(latlng) {
         if (latlng){
-            this.set('lat', latlng.lat());
-            this.set('lng', latlng.lng());
+            this.set('lat', String(latlng.lat()));
+            this.set('lng', String(latlng.lng()));
         }else{
             console.log(latlng);
         }
