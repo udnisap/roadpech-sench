@@ -161,7 +161,7 @@ Ext.define('Roadpech.controller.MapController', {
 
 
         Ext.Ajax.request({
-            url: '/api/index.php/road/',
+            url: 'http://roadpech.ideawide.com/api/index.php/road/',
             success: function(response) {
                 var obj = JSON.parse(response.responseText);
                 var def = {
@@ -182,7 +182,7 @@ Ext.define('Roadpech.controller.MapController', {
         });
         //get Traffic
         Ext.Ajax.request({
-            url: '/api/index.php/prediction/',
+            url: 'http://roadpech.ideawide.com/api/index.php/prediction/',
             success: function(response) {
                 var obj = JSON.parse(response.responseText);
                 Ext.each(obj, function(o, i) {
