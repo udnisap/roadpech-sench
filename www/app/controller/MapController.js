@@ -30,8 +30,8 @@ Ext.define('Roadpech.controller.MapController', {
                 levels: [
                     {fillColor: "#bbf7bb"}, //orange
                     {fillColor: "#1cd41c"}, //green
-                    {fillColor: "#FFFF00"}, //yellow  2
-                    {fillColor: "#FF0000"}, //red     4
+                    {fillColor: "#FFFF00"}, //yellow  
+                    {fillColor: "#FF0000"}, //red     
 
                 ],
                 traffic: []
@@ -135,7 +135,6 @@ Ext.define('Roadpech.controller.MapController', {
     },
     showTraffic: function(time) {
         var f = this.getSettings().fusion;
-        console.log(f.traffic);
         Ext.each(f.traffic, function(o, i) {
             f.roadSegments[o.road].setOptions(f.levels[o["level_"+time]]);
         });
@@ -192,26 +191,6 @@ Ext.define('Roadpech.controller.MapController', {
             }
         });
         
-
-
-
-
-
-//        this.traficLayer = new google.maps.FusionTablesLayer({
-//            query: {
-//                //where : 'year = 1973'
-//                select: 'Location',
-////	      select: 'location',
-//                from: '1w0W9_Q2kqdSqjdhHs1k-H1JxrBX2rHu5l8psA_o',
-////	      from: '1xWyeuAhIFK_aED1ikkQEGmR8mINSCJO9Vq-BPQ',
-//            },
-//            heatmap: {
-//                //              enabled: true
-//            }
-//        });
-//        this.traficLayer.setMap(gmap);
-
-
         this.geo = Ext.create('Ext.util.Geolocation', {
             autoUpdate: false,
             listeners: {
@@ -230,7 +209,6 @@ Ext.define('Roadpech.controller.MapController', {
         this.loadMarkers(map.getMap().getBounds());
     },
     onBackTap: function(button, e, eOpts) {
-
         this.redirectTo('map');
     },
     onUpdateTap: function(button, e, eOpts) {
@@ -266,7 +244,7 @@ Ext.define('Roadpech.controller.MapController', {
 
 
         if (settings.addItem) {
-            //Map click event
+            //add map click event
             this.addEventListner = google.maps.event.addListener(gmap, 'click', function(e) {
                 var options = {
                     lat: e.latLng.lat(),
@@ -280,6 +258,7 @@ Ext.define('Roadpech.controller.MapController', {
                 });
             });
         } else {
+	    //remove event listners
             if (this.addEventListner) {
                 google.maps.event.removeListener(this.addEventListner);
             }
@@ -291,14 +270,12 @@ Ext.define('Roadpech.controller.MapController', {
             this.traficLayer.setMap(null);
         }
 
-        /*
-         console.log(map);
-         if(settings.curLocation){
-         map.useCurrentLocation(true);
-         }else{
-         map.useCurrentLocation(false);
-         }
-         */
+        if(settings.curLocation){
+     	   map.useCurrentLocation(true);
+        }else{
+          map.useCurrentLocation(false);
+        }
+       
         this.redirectTo('map');
         settingsPanel.setMasked(false);
     },
@@ -320,7 +297,6 @@ Ext.define('Roadpech.controller.MapController', {
         };
 
         var marker = Ext.create('Roadpech.model.Marker', options);
-//        console.log(marker);
         markers.add(marker);
         me.addMarker(marker, {
             draggable: true,
@@ -335,7 +311,6 @@ Ext.define('Roadpech.controller.MapController', {
     onSettingsTap: function(button, e, eOpts) {
         var view = this.getSettingsPanel(),
                 settings = this.getSettings();
-        console.log(settings);
         if (settings)
             view.setData(settings);
         Ext.Viewport.setActiveItem(view);
@@ -369,7 +344,6 @@ Ext.define('Roadpech.controller.MapController', {
                 me = this;
         this.geocoder.geocode({'location': new google.maps.LatLng(marker.lat, marker.lng)}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
-                //alert(results[0].formatted_address);
                 me.getMarkerInfo().setHtml(results[0].formatted_address);
             } else {
                 me.getMarkerInfo().setHtml("Geocode was not successful.");
@@ -428,25 +402,19 @@ Ext.define('Roadpech.controller.MapController', {
 
         //onMarkerDrag
         google.maps.event.addListener(gMarker, 'dragend', function(e) {
-            console.log("drag", marker)
             marker.setLocation(e.latLng);
         });
-//        console.log("add")
 
         markersHash[hash] = gMarker;
 
     },
     updateMarker: function(marker) {
-        console.log("update")
         var pos = new google.maps.LatLng(marker.get('lat'), marker.get('lng')),
                 hash = pos.toString();
 
         if (!markersHash[hash])
             return;
 
-//        markersHash[hash].setMap(null);
-//        unset(markersHash[hash]);
-//        this.addMarker(marker);
 
 
     },

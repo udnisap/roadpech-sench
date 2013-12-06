@@ -41,9 +41,21 @@ Ext.define('Roadpech.view.Login', {
                 padding: '10px',
                 ui: 'confirm',
                 text: 'Login'
+            },
+            {
+                xtype: 'button',
+                itemId: 'signUpButton',
+                padding: '10px',
+                ui: 'action',
+                text: 'Signup'
             }
         ],
         listeners: [
+            {
+                fn: 'onSignUpButtonTap',
+                event: 'tap',
+                delegate: '#signUpButton'
+            },
             {
                 fn: 'onLogInButtonTap',
                 event: 'tap',
@@ -56,10 +68,16 @@ Ext.define('Roadpech.view.Login', {
         var me = this;
         var username = me.down('#username').getValue(),
             password = me.down('#password').getValue();
-        console.log(username, password);
-
         this.fireEvent('signInCommand', me, username, password);
 
-    }
+    },
 
+    	
+    onSignUpButtonTap: function(button, e, eOpts) {
+        var me = this;
+        var username = me.down('#username').getValue(),
+            password = me.down('#password').getValue();
+        this.fireEvent('signUpCommand', me, username, password);
+
+    }
 });

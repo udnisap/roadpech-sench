@@ -48,7 +48,6 @@ Ext.define('Roadpech.controller.MainController', {
 
     viewMap: function() {
         var view = this.getMapView();
-        //mainView.setActiveItem(0);
         Ext.Viewport.setActiveItem(view);
     },
 

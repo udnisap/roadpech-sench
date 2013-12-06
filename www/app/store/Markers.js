@@ -27,7 +27,7 @@ Ext.define('Roadpech.store.Markers', {
         storeId: 'markers',
         proxy: {
             type: 'rest',
-            url: '/api/index.php/marker',
+            url: 'http://roadpech.ideawide.com/api/index.php/marker',
             appendId: false,
             reader: {
                 type: 'json'

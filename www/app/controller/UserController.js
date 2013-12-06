@@ -40,13 +40,37 @@ Ext.define('Roadpech.controller.UserController', {
 
         control: {
             "loginView": {
-                signInCommand: 'onSignInCommand'
+                signInCommand: 'onSignInCommand',
+                signUpCommand: 'onSignUpCommand'
             }
         }
     },
-
+    
+    onSignUpCommand: function(item, username, password) {
+        var me = this,
+            loginView = me.getLoginView();
+        loginView.setMasked({
+            xtype: 'loadmask',
+            message: 'Signing Up...'
+        });
+        Ext.Ajax.request({
+                 url: 'http://roadpech.ideawide.com/api/index.php/user',
+                 params: {
+                	username : username,
+                 	password: password
+                 },
+                 method: 'POST',
+                 success: function (response) {
+		        Ext.Msg.alert('Sucess', 'Account added.');
+        		loginView.setMasked(false);
+	         },
+        	 failure: function (response) {
+            		Ext.Msg.alert('Error', 'Account creating failed.');
+		        loginView.setMasked(false);
+   	         }
+        });
+    },	
     onSignInCommand: function(item, username, password) {
-        console.log(username, password);
         var me = this,
             loginView = me.getLoginView();
 
@@ -62,55 +86,26 @@ Ext.define('Roadpech.controller.UserController', {
 
 
         var task;
-        if (username=="admin" && password=="admin")
-        task = Ext.create('Ext.util.DelayedTask', function () {
-            me.signInSuccess(); 
-        });
-        else
-        task = Ext.create('Ext.util.DelayedTask', function () {
-            me.signInFailure("Invalid Username or Password"); 
-        });
-
-        task.delay(500);
-
-
-        /*
-
-        Ext.data.JsonP.request({
-        url: 'http://roadpechrest.ap01.aws.af.cm/login?callback=callback',
-        method : "POST",
-        params: {
-        username : "dfd",
-        password: "dfd"
-        },
-        callback: function(successful, data ) {
-        console.log(successful, data);        
-        }
-        });
-
         Ext.Ajax.request({
-        url: 'http://roadpechrest.ap01.aws.af.cm/login',
-        params: {
-        username : username,
-        password: password
-        },
-        method: 'POST',
-        success: function (response) {
-
-        var loginResponse = Ext.JSON.decode(response.responseText);
-        if (loginResponse.success === "true") {
-        me.sessionToken = loginResponse.sessionToken;
-        me.signInSuccess(); 
-        } else {
-        me.signInFailure(loginResponse.message);
-        }
-        },
-        failure: function (response) {
-        me.sessionToken = null;
-        me.signInFailure('Login failed. Please try again later.');
-        }
+                 url: 'http://roadpech.ideawide.com/api/index.php/login',
+                 params: {
+                	username : username,
+                 	password: password
+                 },
+                 method: 'POST',
+                 success: function (response) {
+	       	     task = Ext.create('Ext.util.DelayedTask', function () {
+	        	    me.signInSuccess(); 
+		     });
+        	     task.delay(500);
+	        },
+        	failure: function (response) {
+        	     task = Ext.create('Ext.util.DelayedTask', function () {
+		            me.signInFailure("Invalid Username or Password"); 
+		      });
+        	      task.delay(500);
+	        }
         });
-        */
     },
 
     signInFailure: function(msg) {
@@ -127,8 +122,9 @@ Ext.define('Roadpech.controller.UserController', {
     },
 
     showLogin: function() {
-        console.log('login route');
         Ext.Viewport.setActiveItem(this.getLoginView());
-    }
+    },
+
+    
 
 });
